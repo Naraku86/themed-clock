@@ -1,0 +1,17 @@
+[clock]
+# Built-in profile or auto; auto falls back to minimal without a theme source.
+theme = auto
+# Optional: a symlink to a theme directory, or a text file containing a theme name.
+# theme_file = ~/.config/my-desktop/current-theme
+font = auto
+style = auto
+color = auto
+max_scale = 3
+seconds_min_width = 54
+animation = auto
+animations = yes
+animation_interval = 180
+animation_duration = 8
+# Only the optional fixed worm sprite uses these minimum dimensions.
+worm_min_width = 64
+worm_min_height = 16

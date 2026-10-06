@@ -1,0 +1,20 @@
+name: CI
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python: ['3.10', '3.14']
+    steps:
+      - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: ${{ matrix.python }}
+      - run: make test
+      - name: Check staged installation
+        run: |
+          make install DESTDIR=/tmp/themed-clock-stage PREFIX=/usr/local
+          /tmp/themed-clock-stage/usr/local/bin/themed-clock --theme blame --preview 78 18 --animate
