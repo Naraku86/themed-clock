@@ -8,6 +8,7 @@ style = auto
 color = auto
 max_scale = 3
 seconds_min_width = 54
+blink_colon = yes
 animation = auto
 animations = yes
 animation_interval = 180

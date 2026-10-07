@@ -16,7 +16,7 @@ root = Path(__file__).resolve().parents[1]
 spec = importlib.util.spec_from_file_location('clock', root / 'clock.py')
 clock = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(clock)
-config = clock.settings(root / 'config.ini.example') | {'theme': 'dune', 'font': 'compact', 'style': 'blocks'}
+config = clock.settings(root / 'config.ini.example') | {'theme': 'dune', 'font': 'compact', 'style': 'blocks', 'blink_colon': False}
 now = datetime(2026, 10, 6, 14, 38, 7)
 for width, height in ((1, 1), (8, 3), (33, 8), (72, 7), (40, 12), (72, 18), (160, 45)):
     plain = clock.frame(width, height, now, config)
@@ -146,6 +146,15 @@ with tempfile.TemporaryDirectory() as temporary:
         os.environ.pop('THEMED_CLOCK_THEME', None)
         if previous is not None:
             os.environ['THEMED_CLOCK_THEME'] = previous
+for theme in clock.PROFILES:
+    options = config | {'theme': theme, 'font': 'auto', 'style': 'auto', 'blink_colon': True}
+    # Width excludes large seconds, so only the separators should change.
+    visible = clock.frame(50, 7, now.replace(second=8), options)
+    hidden = clock.frame(50, 7, now.replace(second=9), options)
+    assert visible != hidden
+    assert [i for i, row in enumerate(visible) if row.strip()] == [i for i, row in enumerate(hidden) if row.strip()]
+    assert clock.frame(50, 7, now.replace(second=8), options | {'blink_colon': False}) == clock.frame(50, 7, now.replace(second=9), options | {'blink_colon': False})
+assert clock.frame(12, 3, now.replace(second=8), config | {'blink_colon': True}) != clock.frame(12, 3, now.replace(second=9), config | {'blink_colon': True})
 master, slave = pty.openpty()
 def resize(rows, columns):
     fcntl.ioctl(slave, termios.TIOCSWINSZ, struct.pack('HHHH', rows, columns, 0, 0))

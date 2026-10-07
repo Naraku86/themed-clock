@@ -26,6 +26,7 @@ del INI se ignoran; los valores inválidos de opciones conocidas muestran un err
 | `color` | `auto` | Color del tema o `#RRGGBB`; depende de la paleta de la terminal. |
 | `max_scale` | `3` | Escala máxima entre 1 y 6. |
 | `seconds_min_width` | `54` | Ancho mínimo de segundos; en detallado también necesita 78. |
+| `blink_colon` | `yes` | Alterna los separadores cada segundo; `no` los mantiene fijos. |
 | `animations` | `yes` | Activar o desactivar: `yes` / `no`. |
 | `animation` | `auto` | Efecto del tema, `none` o nombre explícito. |
 | `animation_interval` | `180` | Segundos desde que termina un efecto hasta el siguiente. |

@@ -26,6 +26,7 @@ INI file are ignored; invalid supported values fail with a readable error.
 | `color` | `auto` | Theme accent or `#RRGGBB`; palette support depends on terminal. |
 | `max_scale` | `3` | Maximum integer scale, clamped to 1–6. |
 | `seconds_min_width` | `54` | Minimum columns for large seconds; detailed designs also need 78. |
+| `blink_colon` | `yes` | Alternate visible/hidden separators each second; `no` keeps them fixed. |
 | `animations` | `yes` | `yes` or `no`. |
 | `animation` | `auto` | Theme effect, `none`, or an explicit effect listed below. |
 | `animation_interval` | `180` | Seconds after one animation ends until the next starts. |

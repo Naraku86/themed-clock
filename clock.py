@@ -112,7 +112,8 @@ def settings(path=CONFIG):
     enabled = section.get('animations', 'yes').lower()
     if enabled not in ('yes', 'true', '1', 'no', 'false', '0'):
         raise ValueError('animations must be yes or no')
-    return dict(style=style, font=font, animation=animation, theme=theme, color=color,
+    blink_colon = parser.getboolean('clock', 'blink_colon', fallback=True)
+    return dict(blink_colon=blink_colon, style=style, font=font, animation=animation, theme=theme, color=color,
                 theme_file=section.get('theme_file', ''),
                 animations=enabled in ('yes', 'true', '1'),
                 max_scale=int(number('max_scale', 3, 1, 6)),
@@ -322,6 +323,9 @@ def frame(width, height, now, config, progress=None):
         glyph = {'blocks': '█', 'light': '░', 'ascii': '#'}[style]
         column = 0
         for digit in label:
+            if digit == ':' and config['blink_colon'] and now.second % 2:
+                column += len(digits[digit][0]) + 1
+                continue
             for row, pixels in enumerate(digits[digit]):
                 y1, y2 = y0 + row * sy, y0 + (row + 1) * sy
                 for offset, pixel in enumerate(pixels):
@@ -335,7 +339,10 @@ def frame(width, height, now, config, progress=None):
             text = now.strftime('%d / %m / %Y') if width >= 14 else ''
             center(y0 + digit_height + 1, text)
     else:
-        center(height // 2, now.strftime('%H:%M'))
+        compact = now.strftime('%H:%M')
+        if config['blink_colon'] and now.second % 2:
+            compact = compact.replace(':', ' ')
+        center(height // 2, compact)
         if height >= 5 and width >= 10:
             center(height // 2 + 2, now.strftime('%d/%m/%Y'))
     if progress is not None and animation_fits(width, height, config):
@@ -420,7 +427,8 @@ def run(screen, config, load):
             except curses.error:
                 pass
         screen.refresh()
-        screen.timeout(80 if started is not None else 1000)
+        until_second = max(1, round((1 - time.time() % 1) * 1000))
+        screen.timeout(min(80, until_second) if started is not None else until_second)
         key = screen.getch()
         if key in (ord('q'), ord('Q'), 27):
             return
